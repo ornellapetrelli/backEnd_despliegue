@@ -162,8 +162,8 @@ import ResponseBuilder from "../utils/builders/responseBuilder.js";
 //   }
 // };
 
-const jwt = require('jsonwebtoken');
-require('dotenv').config();  // Cargar las variables de entorno desde el archivo .env
+// const jwt = require('jsonwebtoken');
+// require('dotenv').config();  // Cargar las variables de entorno desde el archivo .env
 
 export const verifyAuthenticationController = async (req, res) => {
   try {
