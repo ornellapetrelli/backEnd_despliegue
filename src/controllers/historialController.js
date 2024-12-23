@@ -251,7 +251,7 @@ const sendEmail = async (email, flightData) => {
     throw new Error('Fallo al enviar mail');
   }
 };
-eo
+
 export const addFlightToHistory = async (req, res) => {
   try {
     const { fechaVuelo, horario, codigoVuelo, lugarPartida, lugarDestino, precio, duracion, aerolinea, estadoVuelo, claseServicio } = req.body;
