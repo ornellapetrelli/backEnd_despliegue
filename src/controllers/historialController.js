@@ -24,7 +24,7 @@ export const verifyAuthenticationController = async (req, res, next) => {
 
 export const addFlightToHistory = async (req, res) => {
   try {
-    const { flights , totalPrice } = req.body;
+    const { flights } = req.body;
 
     if (!flights || flights.length === 0) {
       return res.status(400).json({ message: 'Se requiere al menos un vuelo para procesar la compra' });
@@ -63,7 +63,6 @@ export const addFlightToHistory = async (req, res) => {
         estadoVuelo,
         claseServicio,
         userId: req.userId,
-        totalPrice
       });
 
       await newFlightHistory.save();
@@ -72,7 +71,7 @@ export const addFlightToHistory = async (req, res) => {
 
     if (savedFlights.length > 0) {
       for (const flight of savedFlights) {
-        await sendEmail(user.email, flight, totalPrice);
+        await sendEmail(user.email, flight);
       }
     }
 
@@ -83,7 +82,7 @@ export const addFlightToHistory = async (req, res) => {
   }
 };
 
-const sendEmail = async (email, flightData, totalPrice) => {
+const sendEmail = async (email, flightData) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -91,19 +90,6 @@ const sendEmail = async (email, flightData, totalPrice) => {
       pass: process.env.GMAIL_PASS,
     },
   });
-
-  let flightDetailsHtml = flightData.map(flight => `
-    <tr><th>Fecha de vuelo</th><td>${flight.fechaVuelo}</td></tr>
-    <tr><th>Horario de vuelo</th><td>${flight.horario}</td></tr>
-    <tr><th>Código de vuelo</th><td>${flight.codigoVuelo}</td></tr>
-    <tr><th>Lugar de partida</th><td>${flight.lugarPartida}</td></tr>
-    <tr><th>Lugar de destino</th><td>${flight.lugarDestino}</td></tr>
-    <tr><th>Precio</th><td>$${flight.precio}</td></tr>
-    <tr><th>Duración del vuelo</th><td>${flight.duracion}</td></tr>
-    <tr><th>Aerolínea</th><td>${flight.aerolinea}</td></tr>
-    <tr><th>Estado de vuelo</th><td>${flight.estadoVuelo}</td></tr>
-    <tr><th>Clase de servicio</th><td>${flight.claseServicio}</td></tr>
-  `).join('');
 
   const mailOptions = {
     from: process.env.GMAIL_USER,
@@ -113,9 +99,17 @@ const sendEmail = async (email, flightData, totalPrice) => {
       <h1>Confirmación de vuelo</h1>
       <p>Tu vuelo ha sido exitosamente reservado. Aquí los detalles:</p>
       <table>
-        ${flightDetailsHtml}
+        <tr><th>Fecha de vuelo</th><td>${flightData.fechaVuelo}</td></tr>
+        <tr><th>Horario de vuelo</th><td>${flightData.horario}</td></tr>
+        <tr><th>Código de vuelo</th><td>${flightData.codigoVuelo}</td></tr>
+        <tr><th>Lugar de partida</th><td>${flightData.lugarPartida}</td></tr>
+        <tr><th>Lugar de destino</th><td>${flightData.lugarDestino}</td></tr>
+        <tr><th>Precio</th><td>$${flightData.precio}</td></tr>
+        <tr><th>Duración del vuelo</th><td>${flightData.duracion}</td></tr>
+        <tr><th>Aerolínea</th><td>${flightData.aerolinea}</td></tr>
+        <tr><th>Estado de vuelo</th><td>${flightData.estadoVuelo}</td></tr>
+        <tr><th>Clase de servicio</th><td>${flightData.claseServicio}</td></tr>
       </table>
-      <h3>Precio total de la compra: $${totalPrice}</h3>
       <p>¡Gracias por confiar en nosotros!</p>
     `,
   };

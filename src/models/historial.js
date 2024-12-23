@@ -13,7 +13,6 @@ const flightHistorySchema = new mongoose.Schema({
   estadoVuelo: { type: String, required: true },
   estado: { type: Boolean, default: true },
   claseServicio: { type: String, required: true },
-  totalPrice: { type: Number, default: 0 },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
