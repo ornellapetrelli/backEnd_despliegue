@@ -167,7 +167,7 @@ import ResponseBuilder from "../utils/builders/responseBuilder.js";
 
 export const verifyAuthenticationController = async (req, res) => {
   try {
-    const token = req.headers.authorization; // Obtener el token desde el encabezado de la solicitud
+    const token = req.headers.authorization; 
 
     if (!token) {
       const response = new ResponseBuilder()
@@ -176,13 +176,10 @@ export const verifyAuthenticationController = async (req, res) => {
         .setMessage('No se proporcionó token')
         .setPayload({ detail: 'El token de autenticación es requerido' })
         .build();
-      return res.status(401).json(response); // Responde con 401 si no hay token
+      return res.status(401).json(response);
     }
 
-    // Verificar y decodificar el token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verifica el token usando la clave secreta
-
-    // Buscar al usuario en la base de datos utilizando el ID decodificado del token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); 
     const user = await User.findById(decoded.userId);
     if (!user) {
       const response = new ResponseBuilder()
@@ -191,17 +188,16 @@ export const verifyAuthenticationController = async (req, res) => {
         .setMessage('Usuario no encontrado')
         .setPayload({ detail: 'No se encontró el usuario asociado al token' })
         .build();
-      return res.status(404).json(response); // Responde con 404 si el usuario no existe
+      return res.status(404).json(response); 
     }
 
-    // Si el token es válido y el usuario existe, respondemos con éxito
     const response = new ResponseBuilder()
       .setOk(true)
       .setStatus(200)
       .setMessage('Usuario autenticado correctamente')
       .setPayload({ user })
       .build();
-    res.json(response); // Responde con los detalles del usuario
+    res.json(response); 
 
   } catch (error) {
     console.error('Error en la autenticación:', error);
@@ -211,16 +207,15 @@ export const verifyAuthenticationController = async (req, res) => {
       .setMessage('Error en la autenticación')
       .setPayload({ detail: error.message })
       .build();
-    return res.status(500).json(response); // Responde con 500 si hubo un error
+    return res.status(500).json(response);
   }
 };
 
-// Función para enviar el correo con los detalles del vuelo
 const sendEmail = async (email, flightData) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.GMAIL_USER, // Usa las variables de entorno para la seguridad
+      user: process.env.GMAIL_USER, 
       pass: process.env.GMAIL_PASS,
     },
   });
@@ -228,53 +223,49 @@ const sendEmail = async (email, flightData) => {
   const mailOptions = {
     from: process.env.GMAIL_USER,
     to: email,
-    subject: 'Flight Confirmation',
+    subject: 'Confirmacion de vuelo',
     html: `
-      <h1>Flight Confirmation</h1>
-      <p>Your flight has been successfully booked. Here are the details:</p>
+      <h1>Confirmacion de vuelo</h1>
+      <p>TU vuelo ha sido exitosamente reservado. Aqui los detalles del mismo:</p>
       <table>
-        <tr><th>Flight Date</th><td>${flightData.fechaVuelo}</td></tr>
-        <tr><th>Flight Time</th><td>${flightData.horario}</td></tr>
-        <tr><th>Flight Code</th><td>${flightData.codigoVuelo}</td></tr>
-        <tr><th>Departure Location</th><td>${flightData.lugarPartida}</td></tr>
-        <tr><th>Destination Location</th><td>${flightData.lugarDestino}</td></tr>
-        <tr><th>Price</th><td>$${flightData.precio}</td></tr>
-        <tr><th>Duration</th><td>${flightData.duracion}</td></tr>
-        <tr><th>Airline</th><td>${flightData.aerolinea}</td></tr>
-        <tr><th>Flight Status</th><td>${flightData.estadoVuelo}</td></tr>
-        <tr><th>Service Class</th><td>${flightData.claseServicio}</td></tr>
+        <tr><th>Fecha de vuelo</th><td>${flightData.fechaVuelo}</td></tr>
+        <tr><th>Horario de vuelo</th><td>${flightData.horario}</td></tr>
+        <tr><th>Codigo vuelo</th><td>${flightData.codigoVuelo}</td></tr>
+        <tr><th>Lugar de partida</th><td>${flightData.lugarPartida}</td></tr>
+        <tr><th>Lugar de destino</th><td>${flightData.lugarDestino}</td></tr>
+        <tr><th>Precio</th><td>$${flightData.precio}</td></tr>
+        <tr><th>Duracion de vuelo</th><td>${flightData.duracion}</td></tr>
+        <tr><th>Aerolinea</th><td>${flightData.aerolinea}</td></tr>
+        <tr><th>Estado de vuelo</th><td>${flightData.estadoVuelo}</td></tr>
+        <tr><th>Clase servicio</th><td>${flightData.claseServicio}</td></tr>
       </table>
-      <p>Thank you for trusting us!</p>
+      <p>Gracias por confiar en nosotros!</p>
     `,
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully to:', email);
+    console.log('Email enviado exitosamente:', email);
   } catch (error) {
-    console.error('Error sending email:', error);
-    throw new Error('Failed to send email');
+    console.error('Error al enviar mail:', error);
+    throw new Error('Fallo al enviar mail');
   }
 };
-
-// Función para agregar un vuelo al historial y enviar un correo
+eo
 export const addFlightToHistory = async (req, res) => {
   try {
     const { fechaVuelo, horario, codigoVuelo, lugarPartida, lugarDestino, precio, duracion, aerolinea, estadoVuelo, claseServicio } = req.body;
 
-    // Validación de los datos de vuelo
     if (!fechaVuelo || !horario || !codigoVuelo || !lugarPartida || !lugarDestino || !precio || !duracion || !aerolinea || !estadoVuelo || !claseServicio) {
       return res.status(400).json({ message: 'All flight details are required' });
     }
 
-    // Verificar que el usuario esté autenticado y que tenga un correo asociado
     if (!req.user || !req.user.email) {
       return res.status(400).json({ message: 'Usuario no autenticado o email no encontrado' });
     }
 
-    const userEmail = req.user.email; // Obtener el correo del usuario desde el token
+    const userEmail = req.user.email;
 
-    // Crear un nuevo vuelo en el historial
     const newFlightHistory = new FlightHistory({
       fechaVuelo,
       horario,
@@ -286,13 +277,11 @@ export const addFlightToHistory = async (req, res) => {
       aerolinea,
       estadoVuelo,
       claseServicio,
-      userEmail, // Asociar el vuelo con el email del usuario
+      userEmail,
     });
 
-    // Guardar el nuevo vuelo en el historial
     await newFlightHistory.save();
 
-    // Enviar el correo de confirmación
     await sendEmail(userEmail, {
       fechaVuelo,
       horario,
@@ -306,10 +295,9 @@ export const addFlightToHistory = async (req, res) => {
       claseServicio,
     });
 
-    // Responder con éxito
-    return res.status(200).json({ message: 'Flight added to history and email sent successfully' });
+    return res.status(200).json({ message: 'Vuelo añadido con exito y email enviado exitosamente' });
   } catch (error) {
-    console.error('Error adding flight to history:', error);
+    console.error('Error al añadir el vuelo al historial:', error);
     return res.status(500).json({ message: 'Error al agregar el vuelo al historial' });
   }
 };
