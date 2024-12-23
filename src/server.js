@@ -14,7 +14,8 @@ dotenv.config();
 
 const app = express();
 
-const URL_FRONT = process.env.URL_FRONT || 'http://localhost:3000';
+const URL_FRONT = process.env.URL_FRONT;
+// || 'http://localhost:3000'
 
 const corsOptions = {
   origin: URL_FRONT,
