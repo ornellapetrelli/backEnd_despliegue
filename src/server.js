@@ -6,8 +6,8 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import vuelosRoutes from './routes/vuelosRoutes.js';
 import flightHistoryRoutes from './routes/historialRoutes.js';
-// import statusRouter from "./routes/statusRoutes.js";
-//import { verifyApikeyMiddleware } from "./middlewares/authMiddleware.js";
+import statusRouter from "./routes/statusRoutes.js";
+
 dotenv.config();
 
 //const express = require('express');
@@ -18,7 +18,7 @@ const URL_FRONT = process.env.URL_FRONT || 'http://localhost:3000';
 
 const corsOptions = {
   origin: URL_FRONT,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 });
 
 
-// app.use('/api/status', statusRouter)
+app.use('/api/status', statusRouter)
 
 app.use('/api/auth', authRoutes);
 
@@ -56,9 +56,9 @@ mongoose.connect(process.env.DB_URL, {
 });
 
 
-// const PORT = process.env.PORT || 5001;
-// app.listen(PORT, () => {
-//   console.log(`Servidor corriendo en el puerto ${PORT}`);
-// });
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
 
 export default app;
