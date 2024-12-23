@@ -32,6 +32,9 @@ app.use((req, res, next) => {
 });
 
 //app.use(verifyApikeyMiddleware)
+app.get('/', (req, res) => {
+  res.send('API está corriendo');
+});
 
 
 app.use('/api/status', statusRouter)
