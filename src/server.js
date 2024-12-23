@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import vuelosRoutes from './routes/vuelosRoutes.js';
 import flightHistoryRoutes from './routes/historialRoutes.js';
-import statusRouter from "./routes/statusRoutes.js";
+// import statusRouter from "./routes/statusRoutes.js";
 //import { verifyApikeyMiddleware } from "./middlewares/authMiddleware.js";
 dotenv.config();
 
@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.use('/api/status', statusRouter)
+// app.use('/api/status', statusRouter)
 
 app.use('/api/auth', authRoutes);
 
@@ -56,9 +56,9 @@ mongoose.connect(process.env.DB_URL, {
 });
 
 
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+// const PORT = process.env.PORT || 5001;
+// app.listen(PORT, () => {
+//   console.log(`Servidor corriendo en el puerto ${PORT}`);
+// });
 
 export default app;
