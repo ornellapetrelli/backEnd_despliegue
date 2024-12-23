@@ -46,7 +46,7 @@ app.use('/api/vuelos', vuelosRoutes);
 app.use('/api/history', flightHistoryRoutes);
 
 
-mongoose.connect(process.env.DB_URL, {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
@@ -56,9 +56,9 @@ mongoose.connect(process.env.DB_URL, {
 });
 
 
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+// const PORT = process.env.PORT || 5001;
+// app.listen(PORT, () => {
+//   console.log(`Servidor corriendo en el puerto ${PORT}`);
+// });
 
 export default app;
