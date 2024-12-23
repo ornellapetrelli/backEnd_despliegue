@@ -18,7 +18,8 @@ const app = express();
 // || 'http://localhost:3000'
 const corsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = [process.env.URL_FRONT];
+    const allowedOrigins = [process.env.URL_FRONT, 'https://front-end-despliegue-git-main-ornellas-projects-5126821e.vercel.app',
+    ];
     if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
     } else {
