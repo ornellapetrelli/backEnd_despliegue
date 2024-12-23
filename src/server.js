@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import vuelosRoutes from './routes/vuelosRoutes.js';
 import flightHistoryRoutes from './routes/historialRoutes.js';
-import statusRouter from "./routes/statusRoutes.js";
+//import statusRouter from "./routes/statusRoutes.js";
 
 dotenv.config();
 
@@ -46,7 +46,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.use('/api/status', statusRouter)
+//app.use('/api/status', statusRouter)
 
 app.use('/api/auth', authRoutes);
 
