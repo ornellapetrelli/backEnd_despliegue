@@ -14,18 +14,25 @@ dotenv.config();
 
 const app = express();
 
-const URL_FRONT = process.env.URL_FRONT;
+//const URL_FRONT = process.env.URL_FRONT;
 // || 'http://localhost:3000'
-
 const corsOptions = {
-  origin: URL_FRONT,
-  methods: ['GET', 'POST', 'PUT','PATCH', 'DELETE', 'OPTIONS'],
+  origin: (origin, callback) => {
+    const allowedOrigins = [process.env.URL_FRONT];
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS no permite el origen: ${origin}`));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
+
 app.use(bodyParser.json());
 app.use((req, res, next) => {
   console.log(`Ruta solicitada: ${req.method} ${req.url}`);
