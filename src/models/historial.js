@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+
 const flightHistorySchema = new mongoose.Schema({
   fechaVuelo: { type: Date, required: true },
   horario: { type: String, required: true },
@@ -9,16 +10,11 @@ const flightHistorySchema = new mongoose.Schema({
   precio: { type: Number, required: true },
   duracion: { type: String, required: true },
   aerolinea: { type: String, required: true },
-  estadoVuelo: { type: String, required: true },  
-  claseServicio: { type: String, required: true }, 
-  estadoPago: { 
-    type: String, 
-    enum: ['pendiente', 'abonado'], 
-    default: 'pendiente' 
-  },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, 
+  estadoVuelo: { type: String, required: true },
+  estado: { type: Boolean, default: true },
+  claseServicio: { type: String, required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
 const FlightHistory = mongoose.model('FlightHistory', flightHistorySchema);
-
 export default FlightHistory;
